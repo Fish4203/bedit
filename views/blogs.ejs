@@ -7,6 +7,13 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <p>Welcome to <%= blogs %></p>
+
+
+
+    <ul>
+      <% blogs.forEach(function(blog){ %>
+        <li><a href="<%- blog.url; %>"><%= blog.title; %></a></li>
+      <% }); %>
+    </ul>
   </body>
 </html>

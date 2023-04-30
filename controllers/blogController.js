@@ -4,11 +4,13 @@ const asyncHandler = require('express-async-handler')
 // view
 exports.index = asyncHandler(async (req, res, next) => {
   const successfulResult = await Blog.find({}).exec();
+  // const successfulResult = await Blog.findById('644dc6e0f17dbf6c56df034b').exec();
   res.render("blogs", { title: "index", blogs: successfulResult });
 });
 
 exports.blogDetail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Author detail: ${req.params.id}`);
+  const successfulResult = await Blog.findById(req.params.id).exec();
+  res.render("blog", {blog: successfulResult });
 });
 
 // create
