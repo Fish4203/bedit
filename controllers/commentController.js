@@ -1,43 +1,74 @@
+const Blog = require("../models/blog");
 const Comment = require("../models/comment");
 const asyncHandler = require('express-async-handler')
+const { body, validationResult } = require("express-validator");
 
 
-// Display list of all Authors.
-exports.author_list = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author list");
+exports.CreateP = [
+  // Validate and sanitize fields.
+  body("body")
+    .trim()
+    .isLength({ min: 2 })
+    .escape(),
+  // do the stuff
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const comment = new Comment({
+      body: req.body.body,
+      blog: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      const blogResult = await Blog.findById(req.params.id).exec();
+      const commentsResult = await Comment.find({blog: req.params.id}).exec();
+      res.render("blog", {blog: blogResult, comments: commentsResult, errors: errors.array()});
+      return;
+    } else {
+      const blogResult = await Blog.findById(req.params.id).exec();
+      await comment.save();
+      res.redirect(blogResult.url);
+    }
+  }),
+];
+
+// delete
+exports.DeleteG = asyncHandler(async (req, res, next) => {
+  await Comment.deleteOne({_id: req.params.cid}).exec();
+  res.redirect('/blogs/' +req.params.id);
 });
 
-// Display detail page for a specific Author.
-exports.author_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Author detail: ${req.params.id}`);
+// update
+exports.UpdateG = asyncHandler(async (req, res, next) => {
+  const commentsResult = await Comment.findById(req.params.cid).exec();
+  res.render("updateComment", {comment: commentsResult, errors: []});
 });
 
-// Display Author create form on GET.
-exports.author_create_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author create GET");
-});
+exports.UpdateP = [
+  // Validate and sanitize fields.
+  body("body")
+    .trim()
+    .isLength({ min: 2 })
+    .escape(),
+  // do the stuff
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
 
-// Handle Author create on POST.
-exports.author_create_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author create POST");
-});
+    const comment = new Comment({
+      body: req.body.body,
+      blog: req.params.id,
+      _id: req.params.cid
+    });
+    console.log('here');
 
-// Display Author delete form on GET.
-exports.author_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author delete GET");
-});
-
-// Handle Author delete on POST.
-exports.author_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author delete POST");
-});
-
-// Display Author update form on GET.
-exports.author_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author update GET");
-});
-
-// Handle Author update on POST.
-exports.author_update_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author update POST");
-});
+    if (!errors.isEmpty()) {
+      const commentsResult = await Comment.find({blog: req.params.id}).exec();
+      res.render("updateComment", {comment: commentsResult, errors: errors.array()});
+      return;
+    } else {
+      const blogResult = await Blog.findById(req.params.id).exec();
+      await Comment.findByIdAndUpdate(req.params.cid, comment, {});
+      res.redirect(blogResult.url);
+    }
+  }),
+];

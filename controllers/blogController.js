@@ -13,7 +13,7 @@ exports.index = asyncHandler(async (req, res, next) => {
 exports.blogDetail = asyncHandler(async (req, res, next) => {
   const blogResult = await Blog.findById(req.params.id).exec();
   const commentsResult = await Comment.find({blog: req.params.id}).exec();
-  res.render("blog", {blog: blogResult, comments: commentsResult});
+  res.render("blog", {blog: blogResult, comments: commentsResult, errors: []});
 });
 
 // create
@@ -86,7 +86,8 @@ exports.blogUpdateP = [
 
 
     if (!errors.isEmpty()) {
-      res.render("updateBlog", {errors: errors.array()});
+      const blogResult = await Blog.findById(req.params.id).exec();
+      res.render("updateBlog", {blog: blogResult, errors: errors.array()});
       return;
     } else {
       const blogup = await Blog.findByIdAndUpdate(req.params.id, blog, {});
