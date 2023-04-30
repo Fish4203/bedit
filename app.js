@@ -10,6 +10,17 @@ var blogRouter = require('./routes/blogs');
 
 var app = express();
 
+
+// Set up mongoose connection
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
+
+main().catch((err) => console.log(err));
+async function main() {
+  await mongoose.connect('mongodb://blog:fish1234@192.168.20.69:27017/test');
+}
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
