@@ -8,5 +8,11 @@
     <h1><%= blog.title %></h1>
     <p><%= blog.body %></p>
 
+    <ul>
+      <% comments.forEach(function(comment){ %>
+        <li><%= comment.body; %></li>
+      <% }); %>
+    </ul>
+
   </body>
 </html>

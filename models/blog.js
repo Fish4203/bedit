@@ -16,7 +16,7 @@ const BlogSchema = new Schema({
 
 // Virtual for blogs URL
 BlogSchema.virtual("url").get(function () {
-  return `/blogs/blog/${this._id}`;
+  return `/blogs/${this._id}`;
 });
 
 // Export model
