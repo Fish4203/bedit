@@ -10,6 +10,7 @@ var blogRouter = require('./routes/blogs');
 
 var app = express();
 
+require('dotenv').config()
 
 // Set up mongoose connection
 const mongoose = require("mongoose");

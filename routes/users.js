@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var verifyToken = require("../middleware/jwtAuth");
+var jwtAuth = require("../middleware/jwtAuth");
 
 const userController = require("../controllers/userController");
 
 
 // GET catalog home page.
-router.get("/", verifyToken, userController.profile);
+router.get("/", jwtAuth.verifyToken, userController.profile);
 
 router.get("/regester", userController.regesterG);
 router.post("/regester", userController.regesterP);

@@ -1,28 +1,25 @@
 const jwt = require("jsonwebtoken");
+const asyncHandler = require('express-async-handler')
+
 User = require("../models/user");
 
-const verifyToken = (req, res, next) => {
-  if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
-    jwt.verify(req.headers.authorization.split(' ')[1], process.env.API_SECRET, function (err, decode) {
-      if (err) req.user = undefined;
-      User.findOne({
-          _id: decode.id
-        })
-        .exec((err, user) => {
-          if (err) {
-            res.status(500)
-              .send({
-                message: err
-              });
-          } else {
-            req.user = user;
-            next();
-          }
-        })
-    });
+exports.verifyToken = asyncHandler(async (req, res, next) => {
+
+  if ('accessToken' in req.cookies) {
+    jwt.verify(req.cookies['accessToken'], process.env.API_SECRET, asyncHandler(async (err, decoded) => {
+      var id = decoded.id;
+      // console.log(id);
+      const user = await User.findById(id).exec();
+      // console.log(id);
+      if (user == null) {
+        next();
+      } else {
+        req.user = user;
+        next();
+      }
+    }));
   } else {
     req.user = undefined;
     next();
   }
-};
-module.exports = verifyToken;
+});
