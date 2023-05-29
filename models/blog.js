@@ -11,6 +11,7 @@ const BlogSchema = new Schema({
     enum: ["Public", "Private", "Archived"],
     default: "Public",
   },
+  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 

@@ -6,7 +6,8 @@ var bcrypt = require("bcrypt");
 
 // view
 exports.profile = asyncHandler(async (req, res, next) => {
-  res.render("profile", { title: "index", user: req.user });
+  const user = await User.findById(req.params.id).exec();
+  res.render("profile", {user: user });
 });
 
 // create

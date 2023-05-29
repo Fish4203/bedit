@@ -7,7 +7,7 @@ const { body, validationResult } = require("express-validator");
 exports.index = asyncHandler(async (req, res, next) => {
   const successfulResult = await Blog.find({}).exec();
   // const successfulResult = await Blog.findById('644dc6e0f17dbf6c56df034b').exec();
-  res.render("blogs", { title: "index", blogs: successfulResult });
+  res.render("pages/blogs", { title: "index", blogs: successfulResult });
 });
 
 exports.blogDetail = asyncHandler(async (req, res, next) => {
