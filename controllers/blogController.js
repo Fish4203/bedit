@@ -1,24 +1,36 @@
 const Blog = require("../models/blog");
 const Comment = require("../models/comment");
+const User = require("../models/user");
 const asyncHandler = require('express-async-handler')
 const { body, validationResult } = require("express-validator");
 
 // view
 exports.index = asyncHandler(async (req, res, next) => {
   const successfulResult = await Blog.find({}).exec();
+  const users = [];
+  for (const blog in successfulResult) {
+    users.push(await User.findById(successfulResult[blog].user).exec());
+  }
   // const successfulResult = await Blog.findById('644dc6e0f17dbf6c56df034b').exec();
-  res.render("pages/blogs", { title: "index", blogs: successfulResult });
+  res.render("pages/blogs", { title: "index", user: req.user, users: users, blogs: successfulResult });
 });
 
 exports.blogDetail = asyncHandler(async (req, res, next) => {
   const blogResult = await Blog.findById(req.params.id).exec();
   const commentsResult = await Comment.find({blog: req.params.id}).exec();
-  res.render("blog", {blog: blogResult, comments: commentsResult, errors: []});
+  const userResult = await User.findById(blogResult.user).exec();
+  const users = [];
+  for (const comment in commentsResult) {
+    users.push(await User.findById(commentsResult[comment].user).exec());
+  }
+  console.log(req.user);
+  console.log("t");
+  res.render("pages/blog", {title: "the", user: req.user, blog: blogResult, blogUser: userResult, comments: commentsResult, users: users, errors: []});
 });
 
 // create
 exports.blogCreateG = asyncHandler(async (req, res, next) => {
-  res.render("newBlog", {errors: []});
+  res.render("newBlog", {user: req.user, errors: []});
 });
 
 exports.blogCreateP = [
@@ -41,7 +53,7 @@ exports.blogCreateP = [
     });
 
     if (!errors.isEmpty()) {
-      res.render("newBlog", {errors: errors.array()});
+      res.render("newBlog", {user: req.user, errors: errors.array()});
       return;
     } else {
       await blog.save();
@@ -60,7 +72,7 @@ exports.blogDeleteG = asyncHandler(async (req, res, next) => {
 // update
 exports.blogUpdateG = asyncHandler(async (req, res, next) => {
   const blogResult = await Blog.findById(req.params.id).exec();
-  res.render("updateBlog", {blog: blogResult, errors: []});
+  res.render("updateBlog", {user: req.user, blog: blogResult, errors: []});
 });
 
 exports.blogUpdateP = [
@@ -87,7 +99,7 @@ exports.blogUpdateP = [
 
     if (!errors.isEmpty()) {
       const blogResult = await Blog.findById(req.params.id).exec();
-      res.render("updateBlog", {blog: blogResult, errors: errors.array()});
+      res.render("updateBlog", {user: req.user, blog: blogResult, errors: errors.array()});
       return;
     } else {
       const blogup = await Blog.findByIdAndUpdate(req.params.id, blog, {});

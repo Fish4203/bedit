@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler')
 User = require("../models/user");
 
 exports.verifyToken = asyncHandler(async (req, res, next) => {
+  console.log("why");
 
   if ('accessToken' in req.cookies) {
     jwt.verify(req.cookies['accessToken'], process.env.API_SECRET, asyncHandler(async (err, decoded) => {

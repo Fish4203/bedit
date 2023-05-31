@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('../parts/head'); %>
+  </head>
+  <body>
+
+    <%- include('../parts/navbar'); %>
+
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Post content-->
+                <article>
+                    <!-- Post header-->
+                    <header class="mb-4">
+                        <!-- Post title-->
+                        <h1 class="fw-bolder mb-1"><%= blog.title %></h1>
+                        <div class="text-muted fst-italic mb-2">By: <%= blogUser.username %></div>
+                    </header>
+                    <!-- Preview image figure-->
+                    <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
+                    <!-- Post content-->
+                    <section class="mb-5">
+
+                      <% if (errors) { %>
+                        <ul>
+                          <% errors.forEach(function(error){ %>
+                            <li><%= error; %></li>
+                            <% }); %>
+                        </ul>
+                      <% } %>
+
+
+                        <p class="fs-5 mb-4"><%= blog.body %></p>
+
+
+                        <% if (user != undefined && blogUser != undefined && String(user._id) == String(blogUser._id)) { %>
+                          <div class="clearfix">
+                            <a href="/blogs/<%- blog._id %>/delete" type="button" class="btn btn-danger float-start">Delete</a>
+                            <a href="/blogs/<%- blog._id %>/update" type="button" class="btn btn-warning float-end">Update</a>
+                          </div>
+                        <% }%>
+
+
+
+                    </section>
+
+                </article>
+                <!-- Comments section-->
+                <section class="mb-5">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <!-- Comment form-->
+                            <form class="mb-4" action="/blogs/<%- blog._id %>/comment/create" method="post">
+                              <label for="body">Comments:</label>
+                              <textarea id="body" type="text" name="body" class="form-control " rows="3" placeholder="Join the discussion and leave a comment!"></textarea>
+
+                              <input type="submit" class="btn btn-success " value="Create" />
+
+                            </form>
+                            <!-- Single comment-->
+                            <% for (let i=0; i<comments.length; i++){ %>
+                              <div class="clearfix">
+                                <div class="d-flex float-start">
+                                  <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                  <div class="ms-3 ">
+                                    <div class="fw-bold"><%= users[i].username; %></div>
+                                    <p class=""><%= comments[i].body; %></p>
+                                  </div>
+                                </div>
+                                <div class="float-end">
+
+                                  <% if (user != undefined && String(user._id) == String(users[i]._id)) { %>
+                                    <a href="/blogs/<%- blog._id %>/comment/<%- comments[i]._id %>/delete" type="button" class="btn btn-danger ">Delete</a>
+                                    <a href="/blogs/<%- blog._id %>/comment/<%- comments[i]._id %>/update" type="button" class="btn btn-warning ">Update</a>
+                                  <% }%>
+
+                                </div>
+
+                              </div>
+                            <% } %>
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Side widgets-->
+            <div class="col-lg-4">
+                <!-- Search widget-->
+                <div class="card mb-4">
+                    <div class="card-header">Search</div>
+                    <div class="card-body">
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                            <a class="btn btn-primary" id="button-search" type="button">Go!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('../parts/foot'); %>
+  </body>
+</html>

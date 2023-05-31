@@ -1,29 +1,31 @@
 var express = require('express');
 var router = express.Router();
+var jwtAuth = require("../middleware/jwtAuth");
+
 
 const blogController = require("../controllers/blogController");
 const commentController = require("../controllers/commentController");
 
 
 // GET catalog home page.
-router.get("/", blogController.index);
+router.get("/", jwtAuth.verifyToken, blogController.index);
 
 
-router.get("/create", blogController.blogCreateG);
-router.post("/create", blogController.blogCreateP);
+router.get("/create", jwtAuth.verifyToken, blogController.blogCreateG);
+router.post("/create", jwtAuth.verifyToken, blogController.blogCreateP);
 
-router.get("/:id/delete", blogController.blogDeleteG);
+router.get("/:id/delete", jwtAuth.verifyToken, blogController.blogDeleteG);
 
-router.get("/:id/update", blogController.blogUpdateG);
-router.post("/:id/update", blogController.blogUpdateP);
+router.get("/:id/update", jwtAuth.verifyToken, blogController.blogUpdateG);
+router.post("/:id/update", jwtAuth.verifyToken, blogController.blogUpdateP);
 
-router.post("/:id/comment/create", commentController.CreateP);
+router.post("/:id/comment/create", jwtAuth.verifyToken, commentController.CreateP);
 
-router.get("/:id/comment/:cid/delete", commentController.DeleteG);
+router.get("/:id/comment/:cid/delete", jwtAuth.verifyToken, commentController.DeleteG);
 
-router.get("/:id/comment/:cid/update", commentController.UpdateG);
-router.post("/:id/comment/:cid/update", commentController.UpdateP);
+router.get("/:id/comment/:cid/update", jwtAuth.verifyToken, commentController.UpdateG);
+router.post("/:id/comment/:cid/update", jwtAuth.verifyToken, commentController.UpdateP);
 
-router.get("/:id", blogController.blogDetail);
+router.get("/:id", jwtAuth.verifyToken, blogController.blogDetail);
 
 module.exports = router;
