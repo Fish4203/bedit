@@ -13,35 +13,57 @@ exports.CreateP = [
   // do the stuff
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
+    var url;
 
-    const comment = new Comment({
-      body: req.body.body,
-      blog: req.params.id,
-    });
+    if (errors.isEmpty()) {
+      try {
+        const comment = new Comment({
+          body: req.body.body,
+          blog: req.params.id,
+          user: req.user,
+        });
 
-    if (!errors.isEmpty()) {
-      const blogResult = await Blog.findById(req.params.id).exec();
-      const commentsResult = await Comment.find({blog: req.params.id}).exec();
-      res.render("blog", {blog: blogResult, comments: commentsResult, errors: errors.array()});
-      return;
+        await comment.save();
+
+        url = '/blogs/' + req.params.id;
+      } catch (e) {
+        url = '/blogs/' + req.params.id + "/?errors=cant create comment";
+      }
     } else {
-      const blogResult = await Blog.findById(req.params.id).exec();
-      await comment.save();
-      res.redirect(blogResult.url);
+      url = '/blogs/' + req.params.id + "/?errors=cant validate input text";
     }
+
+    res.redirect(url);
   }),
 ];
 
 // delete
 exports.DeleteG = asyncHandler(async (req, res, next) => {
-  await Comment.deleteOne({_id: req.params.cid}).exec();
-  res.redirect('/blogs/' +req.params.id);
+  try {
+    const commentsResult = await Comment.findById(req.params.cid).exec();
+    var url;
+
+    if (String(commentsResult.user._id) == String(req.user._id)) {
+      await Comment.deleteOne({_id: req.params.cid}).exec();
+      url = '/blogs/' + req.params.id;
+    } else {
+      url = '/blogs/' + req.params.id + "/?errors=cant delete another users comments";
+    }
+  } catch (e) {
+    url = '/blogs/' + req.params.id + "/?errors=cant delete comment";
+  }
+
+  res.redirect(url);
 });
 
 // update
 exports.UpdateG = asyncHandler(async (req, res, next) => {
-  const commentsResult = await Comment.findById(req.params.cid).exec();
-  res.render("updateComment", {comment: commentsResult, errors: []});
+  try {
+    const commentsResult = await Comment.findById(req.params.cid).exec();
+    res.render("updateComment", {comment: commentsResult, errors: []});
+  } catch (e) {
+    res.redirect('/blogs/' + req.params.id + "/?errors=cant find comment");
+  }
 });
 
 exports.UpdateP = [
@@ -53,22 +75,31 @@ exports.UpdateP = [
   // do the stuff
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
+    var url;
 
-    const comment = new Comment({
-      body: req.body.body,
-      blog: req.params.id,
-      _id: req.params.cid
-    });
-    console.log('here');
+    if (errors.isEmpty()) {
+      try {
+        const commentsResult = await Comment.findById(req.params.cid).exec();
 
-    if (!errors.isEmpty()) {
-      const commentsResult = await Comment.find({blog: req.params.id}).exec();
-      res.render("updateComment", {comment: commentsResult, errors: errors.array()});
-      return;
+        if (String(commentsResult.user._id) == String(req.user._id)) {
+          const comment = new Comment({
+            body: req.body.body,
+            blog: req.params.id,
+            _id: req.params.cid
+          });
+          await Comment.findByIdAndUpdate(req.params.cid, comment, {});
+
+          url = '/blogs/' + req.params.id;
+        } else {
+          url = '/blogs/' + req.params.id + "/comment/" + req.params.cid + "/update" + "/?errors=Cant update another users comments";
+        }
+      } catch (e) {
+        url = '/blogs/' + req.params.id + "/comment/" + req.params.cid + "/update" + "/?errors=Cant update comment";
+      }
     } else {
-      const blogResult = await Blog.findById(req.params.id).exec();
-      await Comment.findByIdAndUpdate(req.params.cid, comment, {});
-      res.redirect(blogResult.url);
+      url = '/blogs/' + req.params.id + "/comment/" + req.params.cid + "/update" + "/?errors=Cant validate input text";
     }
+
+    res.redirect(url);
   }),
 ];

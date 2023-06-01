@@ -27,8 +27,10 @@
                       <% if (errors) { %>
                         <ul>
                           <% errors.forEach(function(error){ %>
-                            <li><%= error; %></li>
-                            <% }); %>
+                            <% if (error != undefined) { %>
+                              <li><%= error; %></li>
+                            <% } %>
+                          <% }); %>
                         </ul>
                       <% } %>
 

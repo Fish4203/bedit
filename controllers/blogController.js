@@ -23,9 +23,7 @@ exports.blogDetail = asyncHandler(async (req, res, next) => {
   for (const comment in commentsResult) {
     users.push(await User.findById(commentsResult[comment].user).exec());
   }
-  console.log(req.user);
-  console.log("t");
-  res.render("pages/blog", {title: "the", user: req.user, blog: blogResult, blogUser: userResult, comments: commentsResult, users: users, errors: []});
+  res.render("pages/blog", {title: "the", user: req.user, blog: blogResult, blogUser: userResult, comments: commentsResult, users: users, errors: [req.query.errors]});
 });
 
 // create
