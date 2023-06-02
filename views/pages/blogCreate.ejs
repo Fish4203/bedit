@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('../parts/head'); %>
+  </head>
+  <body>
+
+    <%- include('../parts/navbar'); %>
+
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Post content-->
+                <article>
+                    <!-- Post header-->
+                    <header class="mb-4">
+                        <!-- Post title-->
+                        <h1 class="fw-bolder mb-1"><%= title; %></h1>
+                    </header>
+                    <!-- Preview image figure-->
+                    <!-- Post content-->
+                    <section class="mb-5">
+
+                      <% if (errors) { %>
+                        <ul>
+                          <% errors.forEach(function(error){ %>
+                            <% if (error != undefined) { %>
+                              <li><%= error; %></li>
+                            <% } %>
+                          <% }); %>
+                        </ul>
+                      <% } %>
+
+
+                      <form action="/blogs/create" method="post">
+                        <label for="title">Enter blog title: </label>
+                        <input id="title" type="text" name="title"/>
+                        <br>
+
+                        <label for="body">Enter blog body: </label>
+                        <textarea id="body" type="text" name="body" class="form-control " rows="4" placeholder="A cool post about things you like"></textarea>
+
+                        <input type="submit" class="btn btn-success " value="Submit" />
+                      </form>
+
+
+
+                    </section>
+
+                </article>
+            </div>
+            <!-- Side widgets-->
+            <div class="col-lg-4">
+                <!-- Search widget-->
+                <%- include('../parts/serch'); %>
+
+            </div>
+        </div>
+    </div>
+    <%- include('../parts/foot'); %>
+  </body>
+</html>

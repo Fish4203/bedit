@@ -16,7 +16,6 @@ router.post("/create", jwtAuth.verifyToken, blogController.blogCreateP);
 
 router.get("/:id/delete", jwtAuth.verifyToken, blogController.blogDeleteG);
 
-router.get("/:id/update", jwtAuth.verifyToken, blogController.blogUpdateG);
 router.post("/:id/update", jwtAuth.verifyToken, blogController.blogUpdateP);
 
 router.post("/:id/comment/create", jwtAuth.verifyToken, commentController.CreateP);

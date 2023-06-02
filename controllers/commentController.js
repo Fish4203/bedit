@@ -16,18 +16,22 @@ exports.CreateP = [
     var url;
 
     if (errors.isEmpty()) {
-      try {
-        const comment = new Comment({
-          body: req.body.body,
-          blog: req.params.id,
-          user: req.user,
-        });
+      if (req.user != undefined) {
+        try {
+          const comment = new Comment({
+            body: req.body.body,
+            blog: req.params.id,
+            user: req.user,
+          });
 
-        await comment.save();
+          await comment.save();
 
-        url = '/blogs/' + req.params.id;
-      } catch (e) {
-        url = '/blogs/' + req.params.id + "/?errors=cant create comment";
+          url = '/blogs/' + req.params.id;
+        } catch (e) {
+          url = '/blogs/' + req.params.id + "/?errors=cant create comment";
+        }
+      } else {
+        url = '/blogs/' + req.params.id + "/?errors=You need to login to make a comment";
       }
     } else {
       url = '/blogs/' + req.params.id + "/?errors=cant validate input text";

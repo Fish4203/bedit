@@ -19,16 +19,17 @@ exports.blogDetail = asyncHandler(async (req, res, next) => {
   const blogResult = await Blog.findById(req.params.id).exec();
   const commentsResult = await Comment.find({blog: req.params.id}).exec();
   const userResult = await User.findById(blogResult.user).exec();
+  const otherBlogs = await Blog.find({user: blogResult.user}).exec();
   const users = [];
   for (const comment in commentsResult) {
     users.push(await User.findById(commentsResult[comment].user).exec());
   }
-  res.render("pages/blog", {title: "the", user: req.user, blog: blogResult, blogUser: userResult, comments: commentsResult, users: users, errors: [req.query.errors]});
+  res.render("pages/blog", {title: blogResult.title, user: req.user, blog: blogResult, blogUser: userResult, otherBlogs: otherBlogs, comments: commentsResult, users: users, errors: [req.query.errors]});
 });
 
 // create
 exports.blogCreateG = asyncHandler(async (req, res, next) => {
-  res.render("newBlog", {user: req.user, errors: []});
+  res.render("pages/blogCreate", {title: "Create a new blog", user: req.user, errors: []});
 });
 
 exports.blogCreateP = [
@@ -43,35 +44,53 @@ exports.blogCreateP = [
     .escape(),
   // do the stuff
   asyncHandler(async (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req).array();
 
-    const blog = new Blog({
-      title: req.body.title,
-      body: req.body.body,
-    });
+    if (errors.length == 0) {
+      if (req.user != undefined) {
+        try {
+          const blog = new Blog({
+            title: req.body.title,
+            body: req.body.body,
+            user: req.user,
+          });
 
-    if (!errors.isEmpty()) {
-      res.render("newBlog", {user: req.user, errors: errors.array()});
-      return;
-    } else {
-      await blog.save();
-      res.redirect(blog.url);
+          await blog.save();
+
+          res.redirect(blog.url);
+        } catch (e) {
+          errors.push("cant create blog");
+        }
+      } else {
+        errors.push("You have to be loged in to create a blog");
+      }
     }
+
+    res.render("pages/blogCreate", {title: "Create a new blog", user: req.user, errors: errors});
   }),
 ];
 
 // delete
 exports.blogDeleteG = asyncHandler(async (req, res, next) => {
-  await Blog.deleteOne({_id: req.params.id}).exec();
-  await Comment.deleteMany({blog: req.params.id}).exec();
-  res.redirect('/blogs');
+  try {
+    const blogResult = await Blog.findById(req.params.id).exec();
+    var url;
+
+    if (String(blogResult.user._id) == String(req.user._id)) {
+      await Blog.deleteOne({_id: req.params.id}).exec();
+      await Comment.deleteMany({blog: req.params.id}).exec();
+      url = '/blogs';
+    } else {
+      url = '/blogs/' + req.params.id + "/?errors=cant delete another users blog";
+    }
+  } catch (e) {
+    url = '/blogs/' + req.params.id + "/?errors=cant delete blog";
+  }
+
+  res.redirect(url);
 });
 
 // update
-exports.blogUpdateG = asyncHandler(async (req, res, next) => {
-  const blogResult = await Blog.findById(req.params.id).exec();
-  res.render("updateBlog", {user: req.user, blog: blogResult, errors: []});
-});
 
 exports.blogUpdateP = [
   // Validate and sanitize fields.
@@ -85,23 +104,32 @@ exports.blogUpdateP = [
     .escape(),
   // do the stuff
   asyncHandler(async (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req).array();
+    var url;
 
-    const blog = new Blog({
-      title: req.body.title,
-      body: req.body.body,
-      _id: req.params.id,
-    });
+    if (errors.length == 0) {
+      if (req.user != undefined) {
+        try {
+          const blog = new Blog({
+            title: req.body.title,
+            body: req.body.body,
+            user: req.user,
+            _id: req.params.id,
+          });
 
+          const blogup = await Blog.findByIdAndUpdate(req.params.id, blog, {});
 
-
-    if (!errors.isEmpty()) {
-      const blogResult = await Blog.findById(req.params.id).exec();
-      res.render("updateBlog", {user: req.user, blog: blogResult, errors: errors.array()});
-      return;
+          url = '/blogs/' + req.params.id;
+        } catch (e) {
+          url = '/blogs/' + req.params.id + "/?errors=cant update blog";
+        }
+      } else {
+        url = '/blogs/' + req.params.id + "/?errors=You have to be loged in to update a blog";
+      }
     } else {
-      const blogup = await Blog.findByIdAndUpdate(req.params.id, blog, {});
-      res.redirect(blogup.url);
+      url = '/blogs/' + req.params.id + "/?errors=" + String(errors[0]);
     }
+
+    res.redirect(url);
   }),
 ];

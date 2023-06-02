@@ -35,15 +35,53 @@
                       <% } %>
 
 
+                      <div class="" id="mainBody">
                         <p class="fs-5 mb-4"><%= blog.body %></p>
-
 
                         <% if (user != undefined && blogUser != undefined && String(user._id) == String(blogUser._id)) { %>
                           <div class="clearfix">
                             <a href="/blogs/<%- blog._id %>/delete" type="button" class="btn btn-danger float-start">Delete</a>
-                            <a href="/blogs/<%- blog._id %>/update" type="button" class="btn btn-warning float-end">Update</a>
+                            <button onclick="blogUpdate()" type="button" class="btn btn-warning float-end">Update</button>
                           </div>
                         <% }%>
+                      </div>
+
+                      <div class="" style="display: none;" id="editBody">
+
+                        <form action="/blogs/<%- blog._id %>/update" method="post">
+                          <label for="title">Enter blog title: </label>
+                          <input id="title" type="text" name="title" value="<%= blog.title %>"/>
+                          <br>
+
+                          <label for="body">Enter blog body: </label>
+                          <textarea id="body" type="text" name="body" class="form-control " rows="4" placeholder="A cool post about things you like"><%= blog.body %></textarea>
+
+                          <br>
+                          <% if (user != undefined && blogUser != undefined && String(user._id) == String(blogUser._id)) { %>
+                            <div class="clearfix">
+                              <a href="/blogs/<%- blog._id %>/delete" type="button" class="btn btn-danger float-start">Delete</a>
+                              <input type="submit" class="btn btn-success float-end" value="Submit" />
+                            </div>
+                          <% }%>
+                        </form>
+
+                      </div>
+
+
+
+                      <script type="text/javascript">
+                        function blogUpdate() {
+                          const main = document.getElementById("mainBody");
+                          const edit = document.getElementById("editBody");
+                          if (main.style.display === "none") {
+                            edit.style.display = "none";
+                            main.style.display = "block";
+                          } else {
+                            main.style.display = "none";
+                            edit.style.display = "block";
+                          }
+                        }
+                      </script>
 
 
 
@@ -112,13 +150,21 @@
             <!-- Side widgets-->
             <div class="col-lg-4">
                 <!-- Search widget-->
+                <%- include('../parts/serch'); %>
+
+
                 <div class="card mb-4">
-                    <div class="card-header">Search</div>
+                    <div class="card-header">other blogs by <%= blogUser.username %></div>
                     <div class="card-body">
-                        <div class="input-group">
-                            <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                            <a class="btn btn-primary" id="button-search" type="button">Go!</a>
-                        </div>
+                      <ul>
+                        <% for (let i=0; i<otherBlogs.length; i++){ %>
+                          <% if (String(otherBlogs[i]._id) != String(blog._id)) { %>
+                            <li style="transform: rotate(0);">
+                              <a class="link-dark stretched-link" href="<%- otherBlogs[i].url; %>"></a> <%= otherBlogs[i].title; %>
+                            </li>
+                          <% } %>
+                        <% } %>
+                      </ul>
                     </div>
                 </div>
             </div>
