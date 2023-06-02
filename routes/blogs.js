@@ -23,7 +23,6 @@ router.post("/:id/comment/create", jwtAuth.verifyToken, commentController.Create
 
 router.get("/:id/comment/:cid/delete", jwtAuth.verifyToken, commentController.DeleteG);
 
-router.get("/:id/comment/:cid/update", jwtAuth.verifyToken, commentController.UpdateG);
 router.post("/:id/comment/:cid/update", jwtAuth.verifyToken, commentController.UpdateP);
 
 router.get("/:id", jwtAuth.verifyToken, blogController.blogDetail);

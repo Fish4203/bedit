@@ -57,14 +57,6 @@ exports.DeleteG = asyncHandler(async (req, res, next) => {
 });
 
 // update
-exports.UpdateG = asyncHandler(async (req, res, next) => {
-  try {
-    const commentsResult = await Comment.findById(req.params.cid).exec();
-    res.render("updateComment", {comment: commentsResult, errors: []});
-  } catch (e) {
-    res.redirect('/blogs/' + req.params.id + "/?errors=cant find comment");
-  }
-});
 
 exports.UpdateP = [
   // Validate and sanitize fields.

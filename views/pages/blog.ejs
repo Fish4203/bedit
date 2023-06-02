@@ -65,24 +65,45 @@
                             <!-- Single comment-->
                             <% for (let i=0; i<comments.length; i++){ %>
                               <div class="clearfix">
-                                <div class="d-flex float-start">
+                                <div class="d-flex float-start" id="comment<%- i %>">
                                   <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
                                   <div class="ms-3 ">
                                     <div class="fw-bold"><%= users[i].username; %></div>
-                                    <p class=""><%= comments[i].body; %></p>
+                                    <div class="">
+                                      <p class=""><%= comments[i].body; %></p>
+                                    </div>
+                                    <div class="" style="display: none;">
+                                      <form class="mb-4" action="/blogs/<%- blog._id %>/comment/<%- comments[i]._id %>/update" method="post">
+                                        <textarea id="body" type="text" name="body" class="form-control " rows="2"><%= comments[i].body; %></textarea>
+
+                                        <input type="submit" class="btn btn-success " value="Submit" />
+                                      </form>
+                                    </div>
                                   </div>
                                 </div>
                                 <div class="float-end">
 
                                   <% if (user != undefined && String(user._id) == String(users[i]._id)) { %>
                                     <a href="/blogs/<%- blog._id %>/comment/<%- comments[i]._id %>/delete" type="button" class="btn btn-danger ">Delete</a>
-                                    <a href="/blogs/<%- blog._id %>/comment/<%- comments[i]._id %>/update" type="button" class="btn btn-warning ">Update</a>
+                                    <button onclick="commentUpdate('comment<%- i %>')" type="button" class="btn btn-warning ">Update</button>
                                   <% }%>
 
                                 </div>
 
                               </div>
                             <% } %>
+                            <script type="text/javascript">
+                              function commentUpdate(comment) {
+                                const thing = document.getElementById(comment).children.item(1);
+                                if (thing.children.item(1).style.display === "none") {
+                                  thing.children.item(2).style.display = "none";
+                                  thing.children.item(1).style.display = "block";
+                                } else {
+                                  thing.children.item(1).style.display = "none";
+                                  thing.children.item(2).style.display = "block";
+                                }
+                              }
+                            </script>
 
                         </div>
                     </div>
