@@ -27,6 +27,24 @@ exports.blogDetail = asyncHandler(async (req, res, next) => {
   res.render("pages/blog", {title: blogResult.title, user: req.user, blog: blogResult, blogUser: userResult, otherBlogs: otherBlogs, comments: commentsResult, users: users, errors: [req.query.errors]});
 });
 
+// search
+exports.blogSearch = asyncHandler(async (req, res, next) => {
+  const blogResult = await Blog.find({title: { $regex: req.params.search }}).exec();
+  const commentsResult = await Comment.find({body: { $regex: req.params.search }}).exec();
+  const userResult = await User.find({username: { $regex: req.params.search }}).exec();
+
+  const blogUsers = [];
+  for (const blog in blogResult) {
+    blogUsers.push(await User.findById(blogResult[blog].user).exec());
+  }
+  const commentBlogs = [];
+  for (const comment in commentsResult) {
+    commentBlogs.push(await Blog.findById(commentsResult[comment].blog).exec());
+  }
+
+  res.render("pages/blogSearch", {title: "Search", user: req.user, query: req.params.search, blogs: blogResult, blogUsers: blogUsers, comments: commentsResult, commentBlogs: commentBlogs, users: userResult});
+});
+
 // create
 exports.blogCreateG = asyncHandler(async (req, res, next) => {
   res.render("pages/blogCreate", {title: "Create a new blog", user: req.user, errors: []});

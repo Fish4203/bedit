@@ -1,0 +1,16 @@
+<div class="card mb-4">
+    <div class="card-header">Search</div>
+    <div class="card-body">
+        <div class="input-group">
+            <input class="form-control" id="search-field" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+            <a class="btn btn-primary" id="button-search" type="button">Go!</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+  document.querySelector('#button-search').onclick = function(e) {
+      var query = document.querySelector('#search-field').value;
+      window.location.pathname = 'blogs/search/' + query;
+  };
+</script>

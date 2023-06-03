@@ -10,6 +10,7 @@ const commentController = require("../controllers/commentController");
 // GET catalog home page.
 router.get("/", jwtAuth.verifyToken, blogController.index);
 
+router.get("/search/:search", jwtAuth.verifyToken, blogController.blogSearch);
 
 router.get("/create", jwtAuth.verifyToken, blogController.blogCreateG);
 router.post("/create", jwtAuth.verifyToken, blogController.blogCreateP);
