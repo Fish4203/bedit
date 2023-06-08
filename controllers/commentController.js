@@ -26,15 +26,15 @@ exports.CreateP = [
 
           await comment.save();
 
-          url = '/blogs/' + req.params.id;
+          url = '/' + req.params.id;
         } catch (e) {
-          url = '/blogs/' + req.params.id + "/?errors=cant create comment";
+          url = '/' + req.params.id + "/?errors=cant create comment";
         }
       } else {
-        url = '/blogs/' + req.params.id + "/?errors=You need to login to make a comment";
+        url = '/' + req.params.id + "/?errors=You need to login to make a comment";
       }
     } else {
-      url = '/blogs/' + req.params.id + "/?errors=cant validate input text";
+      url = '/' + req.params.id + "/?errors=cant validate input text";
     }
 
     res.redirect(url);
@@ -49,12 +49,12 @@ exports.DeleteG = asyncHandler(async (req, res, next) => {
 
     if (String(commentsResult.user._id) == String(req.user._id)) {
       await Comment.deleteOne({_id: req.params.cid}).exec();
-      url = '/blogs/' + req.params.id;
+      url = '/' + req.params.id;
     } else {
-      url = '/blogs/' + req.params.id + "/?errors=cant delete another users comments";
+      url = '/' + req.params.id + "/?errors=cant delete another users comments";
     }
   } catch (e) {
-    url = '/blogs/' + req.params.id + "/?errors=cant delete comment";
+    url = '/' + req.params.id + "/?errors=cant delete comment";
   }
 
   res.redirect(url);
@@ -85,15 +85,15 @@ exports.UpdateP = [
           });
           await Comment.findByIdAndUpdate(req.params.cid, comment, {});
 
-          url = '/blogs/' + req.params.id;
+          url = '/' + req.params.id;
         } else {
-          url = '/blogs/' + req.params.id + "/comment/" + req.params.cid + "/update" + "/?errors=Cant update another users comments";
+          url = '/' + req.params.id + "/comment/" + req.params.cid + "/update" + "/?errors=Cant update another users comments";
         }
       } catch (e) {
-        url = '/blogs/' + req.params.id + "/comment/" + req.params.cid + "/update" + "/?errors=Cant update comment";
+        url = '/' + req.params.id + "/comment/" + req.params.cid + "/update" + "/?errors=Cant update comment";
       }
     } else {
-      url = '/blogs/' + req.params.id + "/comment/" + req.params.cid + "/update" + "/?errors=Cant validate input text";
+      url = '/' + req.params.id + "/comment/" + req.params.cid + "/update" + "/?errors=Cant validate input text";
     }
 
     res.redirect(url);

@@ -46,7 +46,7 @@ exports.regesterP = [
 
 // delete
 exports.logout = asyncHandler(async (req, res, next) => {
-  res.redirect('/blogs');
+  res.redirect('/');
 });
 
 

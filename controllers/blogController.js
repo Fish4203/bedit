@@ -97,12 +97,12 @@ exports.blogDeleteG = asyncHandler(async (req, res, next) => {
     if (String(blogResult.user._id) == String(req.user._id)) {
       await Blog.deleteOne({_id: req.params.id}).exec();
       await Comment.deleteMany({blog: req.params.id}).exec();
-      url = '/blogs';
+      url = '/';
     } else {
-      url = '/blogs/' + req.params.id + "/?errors=cant delete another users blog";
+      url = '/' + req.params.id + "/?errors=cant delete another users blog";
     }
   } catch (e) {
-    url = '/blogs/' + req.params.id + "/?errors=cant delete blog";
+    url = '/' + req.params.id + "/?errors=cant delete blog";
   }
 
   res.redirect(url);
@@ -137,15 +137,15 @@ exports.blogUpdateP = [
 
           const blogup = await Blog.findByIdAndUpdate(req.params.id, blog, {});
 
-          url = '/blogs/' + req.params.id;
+          url = '/' + req.params.id;
         } catch (e) {
-          url = '/blogs/' + req.params.id + "/?errors=cant update blog";
+          url = '/' + req.params.id + "/?errors=cant update blog";
         }
       } else {
-        url = '/blogs/' + req.params.id + "/?errors=You have to be loged in to update a blog";
+        url = '/' + req.params.id + "/?errors=You have to be loged in to update a blog";
       }
     } else {
-      url = '/blogs/' + req.params.id + "/?errors=" + String(errors[0]);
+      url = '/' + req.params.id + "/?errors=" + String(errors[0]);
     }
 
     res.redirect(url);

@@ -40,7 +40,7 @@
 
                         <% if (user != undefined && blogUser != undefined && String(user._id) == String(blogUser._id)) { %>
                           <div class="clearfix">
-                            <a href="/blogs/<%- blog._id %>/delete" type="button" class="btn btn-danger float-start">Delete</a>
+                            <a href="/<%- blog._id %>/delete" type="button" class="btn btn-danger float-start">Delete</a>
                             <button onclick="blogUpdate()" type="button" class="btn btn-warning float-end">Update</button>
                           </div>
                         <% }%>
@@ -48,7 +48,7 @@
 
                       <div class="" style="display: none;" id="editBody">
 
-                        <form action="/blogs/<%- blog._id %>/update" method="post">
+                        <form action="/<%- blog._id %>/update" method="post">
                           <label for="title">Enter blog title: </label>
                           <input id="title" type="text" name="title" value="<%= blog.title %>"/>
                           <br>
@@ -59,7 +59,7 @@
                           <br>
                           <% if (user != undefined && blogUser != undefined && String(user._id) == String(blogUser._id)) { %>
                             <div class="clearfix">
-                              <a href="/blogs/<%- blog._id %>/delete" type="button" class="btn btn-danger float-start">Delete</a>
+                              <a href="/<%- blog._id %>/delete" type="button" class="btn btn-danger float-start">Delete</a>
                               <input type="submit" class="btn btn-success float-end" value="Submit" />
                             </div>
                           <% }%>
@@ -93,7 +93,7 @@
                     <div class="card bg-light">
                         <div class="card-body">
                             <!-- Comment form-->
-                            <form class="mb-4" action="/blogs/<%- blog._id %>/comment/create" method="post">
+                            <form class="mb-4" action="/<%- blog._id %>/comment/create" method="post">
                               <label for="body">Comments:</label>
                               <textarea id="body" type="text" name="body" class="form-control " rows="3" placeholder="Join the discussion and leave a comment!"></textarea>
 
@@ -111,7 +111,7 @@
                                       <p class=""><%= comments[i].body; %></p>
                                     </div>
                                     <div class="" style="display: none;">
-                                      <form class="mb-4" action="/blogs/<%- blog._id %>/comment/<%- comments[i]._id %>/update" method="post">
+                                      <form class="mb-4" action="/<%- blog._id %>/comment/<%- comments[i]._id %>/update" method="post">
                                         <textarea id="body" type="text" name="body" class="form-control " rows="2"><%= comments[i].body; %></textarea>
 
                                         <input type="submit" class="btn btn-success " value="Submit" />
@@ -122,7 +122,7 @@
                                 <div class="float-end">
 
                                   <% if (user != undefined && String(user._id) == String(users[i]._id)) { %>
-                                    <a href="/blogs/<%- blog._id %>/comment/<%- comments[i]._id %>/delete" type="button" class="btn btn-danger ">Delete</a>
+                                    <a href="/<%- blog._id %>/comment/<%- comments[i]._id %>/delete" type="button" class="btn btn-danger ">Delete</a>
                                     <button onclick="commentUpdate('comment<%- i %>')" type="button" class="btn btn-warning ">Update</button>
                                   <% }%>
 
