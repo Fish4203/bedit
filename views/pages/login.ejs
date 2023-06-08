@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('../parts/head'); %>
+  </head>
+  <body>
+
+    <%- include('../parts/navbar'); %>
+
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Post content-->
+                <article>
+                    <!-- Post header-->
+                    <header class="mb-4">
+                        <!-- Post title-->
+                        <h1 class="fw-bolder mb-1"><%= title; %></h1>
+                    </header>
+                    <!-- Preview image figure-->
+                    <!-- Post content-->
+                    <section class="mb-5">
+
+                      <% if (errors) { %>
+                        <ul>
+                          <% errors.forEach(function(error){ %>
+                            <% if (error != undefined) { %>
+                              <li><%= error; %></li>
+                            <% } %>
+                          <% }); %>
+                        </ul>
+                      <% } %>
+
+
+                      <form action="/users/login" method="post">
+                        <label for="username">Enter username: </label>
+                        <input class="form-control" id="username" type="text" name="username"/>
+                        <br>
+
+                        <label for="password">Enter password: </label>
+                        <input class="form-control" id="password" type="text" name="password"/>
+                        <br>
+
+                        <input type="submit" class="btn btn-success " value="Submit" />
+                      </form>
+
+
+
+                    </section>
+
+                </article>
+            </div>
+            <!-- Side widgets-->
+            <div class="col-lg-4">
+                <!-- Search widget-->
+                <%- include('../parts/search'); %>
+
+            </div>
+        </div>
+    </div>
+    <%- include('../parts/foot'); %>
+  </body>
+</html>

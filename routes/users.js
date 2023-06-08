@@ -7,8 +7,8 @@ const userController = require("../controllers/userController");
 
 // GET catalog home page.
 
-router.get("/regester", userController.regesterG);
-router.post("/regester", userController.regesterP);
+router.get("/register", jwtAuth.verifyToken, userController.registerG);
+router.post("/register", userController.registerP);
 
 router.get("/logout", userController.logout);
 

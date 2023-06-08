@@ -1,3 +1,5 @@
+const Blog = require("../models/blog");
+const Comment = require("../models/comment");
 const User = require("../models/user");
 const asyncHandler = require('express-async-handler')
 const { body, validationResult } = require("express-validator");
@@ -7,15 +9,22 @@ var bcrypt = require("bcrypt");
 // view
 exports.profile = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id).exec();
-  res.render("profile", {user: user });
+  const blogResult = await Blog.find({user: user._id}).exec();
+  const commentsResult = await Comment.find({user: user._id}).exec();
+
+  const commentBlogs = [];
+  for (const comment in commentsResult) {
+    commentBlogs.push(await Blog.findById(commentsResult[comment].blog).exec());
+  }
+  res.render("pages/profile", {title: 'User profile', user: req.user, profile: user, blogs: blogResult, comments: commentsResult, commentBlogs: commentBlogs});
 });
 
 // create
-exports.regesterG = asyncHandler(async (req, res, next) => {
-  res.render("newUser", {errors: []});
+exports.registerG = asyncHandler(async (req, res, next) => {
+  res.render("pages/register", {title: 'make a new user', user: req.user, errors: []});
 });
 
-exports.regesterP = [
+exports.registerP = [
   // Validate and sanitize fields.
   body("username")
     .trim()
@@ -46,12 +55,13 @@ exports.regesterP = [
 
 // delete
 exports.logout = asyncHandler(async (req, res, next) => {
+  res.cookie('accessToken', '')
   res.redirect('/');
 });
 
 
 exports.loginG = asyncHandler(async (req, res, next) => {
-  res.render("login", {errors: []});
+  res.render("pages/login", {title: 'Login', user: undefined, errors: []});
 });
 
 exports.loginP = [
@@ -86,7 +96,7 @@ exports.loginP = [
       });
       res.cookie('accessToken', token)
 
-      res.redirect('/users');
+      res.redirect('/');
     } else {
       res.render("login", {errors: ['Wrong password']});
       return;
