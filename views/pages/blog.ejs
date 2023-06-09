@@ -38,6 +38,9 @@
                       <div class="" id="mainBody">
                         <p class="fs-5 mb-4"><%= blog.body %></p>
 
+                        <img src="/images/upload/<%- blog._id %>" alt="">
+
+
                         <% if (user != undefined && blogUser != undefined && String(user._id) == String(blogUser._id)) { %>
                           <div class="clearfix">
                             <a href="/<%- blog._id %>/delete" type="button" class="btn btn-danger float-start">Delete</a>

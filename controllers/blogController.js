@@ -64,6 +64,8 @@ exports.blogCreateP = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array();
 
+    console.log(req.files);
+
     if (errors.length == 0) {
       if (req.user != undefined) {
         try {
@@ -74,6 +76,14 @@ exports.blogCreateP = [
           });
 
           await blog.save();
+
+          const { image } = req.files;
+
+          if (image != undefined) {
+            image.mv(process.cwd() + '/upload/' + blog._id);
+          }
+          console.log(process.cwd());
+          console.log(image);
 
           res.redirect(blog.url);
         } catch (e) {

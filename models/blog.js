@@ -12,6 +12,7 @@ const BlogSchema = new Schema({
     default: "Public",
   },
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  image: Buffer,
 });
 
 

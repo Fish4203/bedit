@@ -33,13 +33,15 @@
                       <% } %>
 
 
-                      <form action="/create" method="post">
+                      <form action="/create" method="post" enctype="multipart/form-data">
                         <label for="title">Enter blog title: </label>
                         <input id="title" type="text" name="title"/>
                         <br>
 
                         <label for="body">Enter blog body: </label>
                         <textarea id="body" type="text" name="body" class="form-control " rows="4" placeholder="A cool post about things you like"></textarea>
+
+                        <input type="file" name="image" />
 
                         <input type="submit" class="btn btn-success " value="Submit" />
                       </form>
