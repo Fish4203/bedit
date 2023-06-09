@@ -80,7 +80,7 @@ exports.blogCreateP = [
           const { image } = req.files;
 
           if (image != undefined) {
-            image.mv(process.cwd() + '/upload/' + blog._id);
+            image.mv(process.cwd() + '/public/images/upload/' + blog._id);
           }
           console.log(process.cwd());
           console.log(image);
@@ -104,9 +104,16 @@ exports.blogDeleteG = asyncHandler(async (req, res, next) => {
     const blogResult = await Blog.findById(req.params.id).exec();
     var url;
 
-    if (String(blogResult.user._id) == String(req.user._id)) {
+    if (String(blogResult.user) == String(req.user._id)) {
+      try {
+        const fs = require('fs');
+        fs.unlinkSync(process.cwd() + '/public/images/upload/' + blogResult._id);
+      } catch (e) {}
+
       await Blog.deleteOne({_id: req.params.id}).exec();
       await Comment.deleteMany({blog: req.params.id}).exec();
+
+
       url = '/';
     } else {
       url = '/' + req.params.id + "/?errors=cant delete another users blog";

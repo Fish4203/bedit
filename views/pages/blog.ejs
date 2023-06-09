@@ -20,7 +20,7 @@
                         <div class="text-muted fst-italic mb-2">By: <%= blogUser.username %></div>
                     </header>
                     <!-- Preview image figure-->
-                    <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
+                    <figure class="mb-4"><img class="img-fluid rounded" src="/images/upload/<%- blog._id %>" alt="..." /></figure>
                     <!-- Post content-->
                     <section class="mb-5">
 
@@ -37,8 +37,6 @@
 
                       <div class="" id="mainBody">
                         <p class="fs-5 mb-4"><%= blog.body %></p>
-
-                        <img src="/images/upload/<%- blog._id %>" alt="">
 
 
                         <% if (user != undefined && blogUser != undefined && String(user._id) == String(blogUser._id)) { %>
