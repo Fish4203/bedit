@@ -102,7 +102,7 @@ exports.blogDeleteG = asyncHandler(async (req, res, next) => {
     const blogResult = await Blog.findById(req.params.id).exec();
     var url;
 
-    if (String(blogResult.user) == String(req.user._id)) {
+    if (String(blogResult.user._id) == String(req.user._id)) {
       try {
         const fs = require('fs');
         fs.unlinkSync(process.cwd() + '/public' + blogResult.image);
@@ -142,32 +142,37 @@ exports.blogUpdateP = [
 
     if (errors.length == 0) {
       if (req.user != undefined) {
-        try {
-          const blog = new Blog({
-            title: req.body.title,
-            body: req.body.body,
-            user: req.user,
-            _id: req.params.id,
-          });
+        const blogResult = await Blog.findById(req.params.id).exec();
+        if (String(req.user._id) == String(blogResult.user._id)) {
+          try {
+            const blog = new Blog({
+              title: req.body.title,
+              body: req.body.body,
+              user: req.user,
+              _id: req.params.id,
+            });
 
-          const blogup = await Blog.findByIdAndUpdate(req.params.id, blog, {});
+            const blogup = await Blog.findByIdAndUpdate(req.params.id, blog, {});
 
 
-          if (req.files != null && 'image' in req.files) {
-            const { image } = req.files;
+            if (req.files != null && 'image' in req.files) {
+              const { image } = req.files;
 
-            try {
-              const fs = require('fs');
-              fs.unlinkSync(process.cwd() + '/public' + blogup.image);
-            } catch (e) {}
+              try {
+                const fs = require('fs');
+                fs.unlinkSync(process.cwd() + '/public' + blogup.image);
+              } catch (e) {}
 
-            image.mv(process.cwd() + '/public' + blogup.image);
+              image.mv(process.cwd() + '/public' + blogup.image);
+            }
+
+
+            url = '/' + req.params.id;
+          } catch (e) {
+            url = '/' + req.params.id + "/?errors=cant update blog";
           }
-
-
-          url = '/' + req.params.id;
-        } catch (e) {
-          url = '/' + req.params.id + "/?errors=cant update blog";
+        } else {
+          url = '/' + req.params.id + "/?errors=you dont have permission to update the blog"
         }
       } else {
         url = '/' + req.params.id + "/?errors=You have to be loged in to update a blog";

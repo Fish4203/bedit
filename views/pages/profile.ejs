@@ -21,13 +21,51 @@
                     <!-- Post content-->
                     <section class="mb-5">
 
-                        <div class="clearfix">
+                        <div class="clearfix" id="mainBody">
                           <figure class="mb-4 float-start"><img class="img-fluid rounded" src="<%- profile.image %>" alt="" style="width:50px;height:50px;" /></figure>
                           <div class="float-start">
                             <p>     Username: <%= profile.username; %></p>
                             <p>     Role: <%= profile.role; %></p>
                           </div>
                         </div>
+
+                        <div class="" style="display: none;" id="editBody">
+                          <form action="/users/<%- profile._id %>/update" method="post" enctype="multipart/form-data">
+                            <label for="username">Enter username: </label>
+                            <input class="form-control" id="username" type="text" name="username"/>
+                            <br>
+
+                            <label for="password">Enter password: </label>
+                            <input class="form-control" id="password" type="text" name="password"/>
+                            <br>
+
+                            <label for="image">Profile image (optional): </label>
+                            <input type="file" name="image" />
+                            <br>
+
+                            <input type="submit" class="btn btn-success " value="Submit" />
+                          </form>
+                        </div>
+                        <br>
+
+                        <% if (user != undefined && String(user._id) == String(profile._id)) { %>
+                          <a href="/users/delete" type="button" class="btn btn-danger ">Delete</a>
+                          <button onclick="profileUpdate()" type="button" class="btn btn-warning ">Update</button>
+                        <% }%>
+
+                        <script type="text/javascript">
+                          function profileUpdate() {
+                            const main = document.getElementById("mainBody");
+                            const edit = document.getElementById("editBody");
+                            if (main.style.display === "none") {
+                              edit.style.display = "none";
+                              main.style.display = "block";
+                            } else {
+                              main.style.display = "none";
+                              edit.style.display = "block";
+                            }
+                          }
+                        </script>
 
 
 

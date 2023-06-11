@@ -16,7 +16,7 @@ exports.profile = asyncHandler(async (req, res, next) => {
   for (const comment in commentsResult) {
     commentBlogs.push(await Blog.findById(commentsResult[comment].blog).exec());
   }
-  res.render("pages/profile", {title: 'User profile', user: req.user, profile: user, blogs: blogResult, comments: commentsResult, commentBlogs: commentBlogs});
+  res.render("pages/profile", {title: 'User profile', user: req.user, profile: user, blogs: blogResult, comments: commentsResult, commentBlogs: commentBlogs, errors: [req.query.errors]});
 });
 
 // create
@@ -113,5 +113,85 @@ exports.loginP = [
       res.render("login", {errors: ['Wrong password']});
       return;
     }
+  }),
+];
+
+// delete
+exports.userDeleteG = asyncHandler(async (req, res, next) => {
+  try {
+    const blogResult = await Blog.find({user: req.user._id}).exec();
+
+    for (const blog in blogResult) {
+      await Comment.deleteMany({blog: blogResult._id}).exec();
+    }
+
+    await Comment.deleteMany({user: req.user._id}).exec();
+    await Blog.deleteMany({user: req.user._id}).exec();
+    await User.deleteOne({_id: req.user._id}).exec();
+
+    res.redirect('/');
+  } catch(e) {
+
+  }
+
+});
+
+
+// update
+exports.userUpdateP = [
+  // Validate and sanitize fields.
+  body("username")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("password")
+    .trim()
+    .isLength({ min: 6 })
+    .escape(),3
+  // do the stuff
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req).array();
+    var url;
+
+    if (errors.length == 0) {
+      if (req.user != undefined) {
+        if (String(req.user._id) == req.params.id) {
+          try {
+            const user = new User({
+              username: req.body.username,
+              password: bcrypt.hashSync(req.body.password, 8),
+              _id: req.params.id,
+            });
+
+            const userup = await User.findByIdAndUpdate(req.params.id, user, {});
+
+
+            if (req.files != null && 'image' in req.files) {
+              const { image } = req.files;
+
+              try {
+                const fs = require('fs');
+                fs.unlinkSync(process.cwd() + '/public' + userup.image);
+              } catch (e) {}
+
+              image.mv(process.cwd() + '/public' + userup.image);
+            }
+
+
+            url = '/users/' + req.params.id;
+          } catch (e) {
+            url = '/users/' + req.params.id + "/?errors=cant update user";
+          }
+        } else {
+          url = '/users/' + req.params.id + "/?errors=you dont have permission to update this profile"
+        }
+      } else {
+        url = '/users/' + req.params.id + "/?errors=You have to be loged in to update this profile";
+      }
+    } else {
+      url = '/users/' + req.params.id + "/?errors=" + String(errors[0]);
+    }
+
+    res.redirect(url);
   }),
 ];
