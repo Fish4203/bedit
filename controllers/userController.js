@@ -36,20 +36,32 @@ exports.registerP = [
     .escape(),
   // do the stuff
   asyncHandler(async (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req).array();
 
-    const user = new User({
-      username: req.body.username,
-      password: bcrypt.hashSync(req.body.password, 8),
-    });
+    if (errors.length == 0) {
+      try {
+        const user = new User({
+          username: req.body.username,
+          password: bcrypt.hashSync(req.body.password, 8),
+        });
 
-    if (!errors.isEmpty()) {
-      res.render("newUser", {errors: errors.array()});
-      return;
+        await user.save();
+
+        const { image } = req.files;
+
+        if (image != undefined) {
+          image.mv(process.cwd() + '/public' + user.image);
+        }
+
+        res.redirect(user.url);
+      } catch (e) {
+        errors.push("can't create user")
+      }
     } else {
-      await user.save();
-      res.redirect(user.url);
+      errors.push("invalid username or password")
     }
+
+    res.render("pages/register", {title: 'make a new user', user: req.user, errors: errors});
   }),
 ];
 

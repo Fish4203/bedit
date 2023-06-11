@@ -33,7 +33,7 @@
                       <% } %>
 
 
-                      <form action="/users/register" method="post">
+                      <form action="/users/register" method="post" enctype="multipart/form-data">
                         <label for="username">Enter username: </label>
                         <input class="form-control" id="username" type="text" name="username"/>
                         <br>
@@ -41,6 +41,7 @@
                         <label for="password">Enter password: </label>
                         <input class="form-control" id="password" type="text" name="password"/>
                         <br>
+                        <input type="file" name="image" />
 
                         <input type="submit" class="btn btn-success " value="Submit" />
                       </form>

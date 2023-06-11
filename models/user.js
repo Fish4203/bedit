@@ -27,5 +27,9 @@ UserSchema.virtual("url").get(function () {
   return `/users/${this._id}`;
 });
 
+UserSchema.virtual("image").get(function () {
+  return '/images/profile/' + this._id;
+});
+
 // Export model
 module.exports = mongoose.model("User", UserSchema);

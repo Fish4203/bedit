@@ -12,13 +12,16 @@ const BlogSchema = new Schema({
     default: "Public",
   },
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  image: Buffer,
 });
 
 
 // Virtual for blogs URL
 BlogSchema.virtual("url").get(function () {
   return `/${this._id}`;
+});
+
+BlogSchema.virtual("image").get(function () {
+  return '/images/upload/' + this._id;
 });
 
 // Export model

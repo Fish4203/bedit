@@ -64,8 +64,6 @@ exports.blogCreateP = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array();
 
-    console.log(req.files);
-
     if (errors.length == 0) {
       if (req.user != undefined) {
         try {
@@ -80,10 +78,8 @@ exports.blogCreateP = [
           const { image } = req.files;
 
           if (image != undefined) {
-            image.mv(process.cwd() + '/public/images/upload/' + blog._id);
+            image.mv(process.cwd() + '/public' + blog.image);
           }
-          console.log(process.cwd());
-          console.log(image);
 
           res.redirect(blog.url);
         } catch (e) {
@@ -107,7 +103,7 @@ exports.blogDeleteG = asyncHandler(async (req, res, next) => {
     if (String(blogResult.user) == String(req.user._id)) {
       try {
         const fs = require('fs');
-        fs.unlinkSync(process.cwd() + '/public/images/upload/' + blogResult._id);
+        fs.unlinkSync(blogResult.image);
       } catch (e) {}
 
       await Blog.deleteOne({_id: req.params.id}).exec();
