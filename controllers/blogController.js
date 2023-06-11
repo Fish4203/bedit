@@ -75,14 +75,16 @@ exports.blogCreateP = [
 
           await blog.save();
 
-          const { image } = req.files;
 
-          if (image != undefined) {
+          if (req.files != null && 'image' in req.files) {
+            const { image } = req.files;
+
             image.mv(process.cwd() + '/public' + blog.image);
           }
 
           res.redirect(blog.url);
         } catch (e) {
+          console.log(e);
           errors.push("cant create blog");
         }
       } else {
@@ -103,7 +105,7 @@ exports.blogDeleteG = asyncHandler(async (req, res, next) => {
     if (String(blogResult.user) == String(req.user._id)) {
       try {
         const fs = require('fs');
-        fs.unlinkSync(blogResult.image);
+        fs.unlinkSync(process.cwd() + '/public' + blogResult.image);
       } catch (e) {}
 
       await Blog.deleteOne({_id: req.params.id}).exec();
@@ -149,6 +151,19 @@ exports.blogUpdateP = [
           });
 
           const blogup = await Blog.findByIdAndUpdate(req.params.id, blog, {});
+
+
+          if (req.files != null && 'image' in req.files) {
+            const { image } = req.files;
+
+            try {
+              const fs = require('fs');
+              fs.unlinkSync(process.cwd() + '/public' + blogup.image);
+            } catch (e) {}
+
+            image.mv(process.cwd() + '/public' + blogup.image);
+          }
+
 
           url = '/' + req.params.id;
         } catch (e) {
