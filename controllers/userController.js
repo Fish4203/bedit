@@ -147,7 +147,7 @@ exports.userUpdateP = [
   body("password")
     .trim()
     .isLength({ min: 6 })
-    .escape(),3
+    .escape(),
   // do the stuff
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array();

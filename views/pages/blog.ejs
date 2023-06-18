@@ -72,8 +72,6 @@
 
                       </div>
 
-
-
                       <script type="text/javascript">
                         function blogUpdate() {
                           const main = document.getElementById("mainBody");
@@ -88,8 +86,6 @@
                         }
                       </script>
 
-
-
                     </section>
 
                 </article>
@@ -99,10 +95,14 @@
                         <div class="card-body">
                             <!-- Comment form-->
                             <form class="mb-4" action="/<%- blog._id %>/comment/create" method="post">
-                              <label for="body">Comments:</label>
-                              <textarea id="body" type="text" name="body" class="form-control " rows="3" placeholder="Join the discussion and leave a comment!"></textarea>
 
-                              <input type="submit" class="btn btn-success " value="Create" />
+                              <label for="body">Comments:</label>
+                              <div class="input-group">
+                                <textarea id="body" type="text" name="body" class="form-control " rows="3" placeholder="Join the discussion and leave a comment!"></textarea>
+
+                                <input type="submit" class="btn btn-success " value="Create" />
+
+                              </div>
 
                             </form>
                             <!-- Single comment-->
@@ -117,9 +117,13 @@
                                     </div>
                                     <div class="" style="display: none;">
                                       <form class="mb-4" action="/<%- blog._id %>/comment/<%- comments[i]._id %>/update" method="post">
-                                        <textarea id="body" type="text" name="body" class="form-control " rows="2"><%= comments[i].body; %></textarea>
 
-                                        <input type="submit" class="btn btn-success " value="Submit" />
+                                        <div class="input-group">
+                                          <textarea id="body" type="text" name="body" class="form-control " rows="2"><%= comments[i].body; %></textarea>
+
+                                          <input type="submit" class="btn btn-success " value="Submit" />
+
+                                        </div>
                                       </form>
                                     </div>
                                   </div>
@@ -170,6 +174,35 @@
                           <% } %>
                         <% } %>
                       </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">Tags:</div>
+                    <div class="card-body">
+                      <div class=" clearfix">
+                        <% for (const value of tags.keys()) { %>
+                          <div class="px-1 float-start">
+
+                            <form class="" action="/<%- blog._id %>/tag" method="post">
+                              <input class="form-control" id="body" type="text" name="body" value="<%= value; %>" hidden/>
+
+                              <input type="submit" value="<%= value; %> <%= tags.get(value); %>" class="btn btn-info" />
+                            </form>
+                          </div>
+                          <% } %>
+                        </div>
+                        <br>
+
+                        <form class="" action="/<%- blog._id %>/tag" method="post">
+
+                          <div class="input-group">
+                            <input class="form-control" id="body" type="text" name="body" placeholder="New Tag"/>
+                            <input type="submit" class="btn btn-success " id="submit-tag" value="Create" />
+                          </div>
+
+                        </form>
+
                     </div>
                 </div>
             </div>

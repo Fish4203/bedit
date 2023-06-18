@@ -1,6 +1,7 @@
 const Blog = require("../models/blog");
 const Comment = require("../models/comment");
 const User = require("../models/user");
+const Tag = require("../models/tag");
 const asyncHandler = require('express-async-handler')
 const { body, validationResult } = require("express-validator");
 
@@ -12,7 +13,12 @@ exports.index = asyncHandler(async (req, res, next) => {
     users.push(await User.findById(successfulResult[blog].user).exec());
   }
   // const successfulResult = await Blog.findById('644dc6e0f17dbf6c56df034b').exec();
-  res.render("pages/blogs", { title: "index", user: req.user, users: users, blogs: successfulResult });
+  res.render("pages/blogs", {
+    title: "index",
+    user: req.user,
+    users: users,
+    blogs: successfulResult
+  });
 });
 
 exports.blogDetail = asyncHandler(async (req, res, next) => {
@@ -24,30 +30,40 @@ exports.blogDetail = asyncHandler(async (req, res, next) => {
   for (const comment in commentsResult) {
     users.push(await User.findById(commentsResult[comment].user).exec());
   }
-  res.render("pages/blog", {title: blogResult.title, user: req.user, blog: blogResult, blogUser: userResult, otherBlogs: otherBlogs, comments: commentsResult, users: users, errors: [req.query.errors]});
-});
 
-// search
-exports.blogSearch = asyncHandler(async (req, res, next) => {
-  const blogResult = await Blog.find({title: { $regex: req.params.search }}).exec();
-  const commentsResult = await Comment.find({body: { $regex: req.params.search }}).exec();
-  const userResult = await User.find({username: { $regex: req.params.search }}).exec();
+  const tagResult = await Tag.find({blog: req.params.id}).exec();
 
-  const blogUsers = [];
-  for (const blog in blogResult) {
-    blogUsers.push(await User.findById(blogResult[blog].user).exec());
-  }
-  const commentBlogs = [];
-  for (const comment in commentsResult) {
-    commentBlogs.push(await Blog.findById(commentsResult[comment].blog).exec());
+  const tagmap = new Map();
+
+  for (const tag in tagResult) {
+    if (tagmap.get(tagResult[tag].body) != undefined) {
+      tagmap.set(tagResult[tag].body, tagmap.get(tagResult[tag].body)+1);
+    } else {
+      tagmap.set(tagResult[tag].body, 1);
+    }
   }
 
-  res.render("pages/blogSearch", {title: "Search", user: req.user, query: req.params.search, blogs: blogResult, blogUsers: blogUsers, comments: commentsResult, commentBlogs: commentBlogs, users: userResult});
+  res.render("pages/blog", {
+    title: blogResult.title,
+    user: req.user,
+    blog: blogResult,
+    blogUser: userResult,
+    otherBlogs: otherBlogs,
+    comments: commentsResult,
+    users: users,
+    tags: tagmap,
+    errors: [req.query.errors]
+  });
 });
+
 
 // create
 exports.blogCreateG = asyncHandler(async (req, res, next) => {
-  res.render("pages/blogCreate", {title: "Create a new blog", user: req.user, errors: []});
+  res.render("pages/blogCreate", {
+    title: "Create a new blog",
+    user: req.user,
+    errors: []
+  });
 });
 
 exports.blogCreateP = [
@@ -92,7 +108,11 @@ exports.blogCreateP = [
       }
     }
 
-    res.render("pages/blogCreate", {title: "Create a new blog", user: req.user, errors: errors});
+    res.render("pages/blogCreate", {
+      title: "Create a new blog",
+      user: req.user,
+      errors: errors
+    });
   }),
 ];
 

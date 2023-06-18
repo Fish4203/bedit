@@ -2,59 +2,73 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 var bcrypt = require("bcrypt");
 
+const Blog = require("./models/blog");
+const Comment = require("./models/comment");
 const User = require("./models/user");
-
-const users = [];
-
+const Tag = require("./models/tag");
 
 main().catch((err) => console.log(err));
 async function main() {
   console.log("Debug: About to connect");
-  await mongoose.connect('mongodb://testa:testa@192.168.20.69:27017');
+  await mongoose.connect('mongodb://blog:fish1234@192.168.20.69:27017/test');
   console.log("Debug: Should be connected?");
-  // await createUsers();
-  await testUser();
+  await foo();
   console.log("Debug: Closing mongoose");
   mongoose.connection.close();
 }
 
-async function userCreate(username, password) {
-  detail = {
-    username: username,
-    password: bcrypt.hashSync(password, 8),
-  };
 
-  const user = new User(detail);
-  await user.save();
-  users.push(user);
-  console.log(`Added User: ${username}`);
+async function tagmake(body, bid, uid) {
+  const tag = new Tag({
+    body: body,
+    blog: bid,
+    user: uid,
+  });
+
+  await tag.save();
 }
 
-
-async function createUsers() {
+async function foo() {
   console.log("Adding blogs");
+  const blog = await Blog.findOne({}).exec();
+  const users = await User.find({}).exec();
+
+
   await Promise.all([
-    userCreate(
-      "tree",
-      "tree123456",
+    tagmake(
+      "like",
+      blog._id,
+      users[2]._id,
     ),
-    userCreate(
-      "foo",
-      "foo123456",
+    tagmake(
+      "like",
+      blog._id,
+      users[1]._id,
     ),
-    userCreate(
-      "bar",
-      "bar123456",
-    ),
-    userCreate(
+    tagmake(
       "fish",
-      "fish123456",
+      blog._id,
+      users[3]._id,
+    ),
+    tagmake(
+      "tree",
+      blog._id,
+      users[2]._id,
+    ),
+    tagmake(
+      "fish",
+      blog._id,
+      users[2]._id,
+    ),
+    tagmake(
+      "like",
+      blog._id,
+      users[0]._id,
+    ),
+    tagmake(
+      "tree",
+      blog._id,
+      users[0]._id,
     ),
   ]);
-}
-
-async function testUser() {
-  const user = await User.findOne({username: 'trwwwee'}).exec();
-
-  console.log(user);
 }
