@@ -22,15 +22,7 @@
                     <!-- Post content-->
                     <section class="mb-5">
 
-                      <% if (errors) { %>
-                        <ul>
-                          <% errors.forEach(function(error){ %>
-                            <% if (error != undefined) { %>
-                              <li><%= error; %></li>
-                            <% } %>
-                          <% }); %>
-                        </ul>
-                      <% } %>
+                      <%- include('../parts/error'); %>
 
 
                       <form action="/create" method="post" enctype="multipart/form-data">

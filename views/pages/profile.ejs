@@ -21,6 +21,8 @@
                     <!-- Post content-->
                     <section class="mb-5">
 
+                      <%- include('../parts/error'); %>
+
                         <div class="clearfix" id="mainBody">
                           <figure class="mb-4 float-start"><img class="img-fluid rounded" src="<%- profile.image %>" alt="" style="width:50px;height:50px;" /></figure>
                           <div class="float-start">
@@ -32,11 +34,15 @@
                         <div class="" style="display: none;" id="editBody">
                           <form action="/users/<%- profile._id %>/update" method="post" enctype="multipart/form-data">
                             <label for="username">Enter username: </label>
-                            <input class="form-control" id="username" type="text" name="username"/>
+                            <input class="form-control" id="username" type="text" name="username" value="<%= profile.username; %>"/>
                             <br>
 
-                            <label for="password">Enter password: </label>
-                            <input class="form-control" id="password" type="text" name="password"/>
+                            <label for="password">Enter old password: </label>
+                            <input class="form-control" id="password" type="text" name="password" />
+                            <br>
+
+                            <label for="password">Enter new password: </label>
+                            <input class="form-control" id="password_new" type="text" name="password_new" />
                             <br>
 
                             <label for="image">Profile image (optional): </label>

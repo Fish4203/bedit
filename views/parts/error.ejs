@@ -1,0 +1,10 @@
+<% if (errors) { %>
+  <ul>
+    <% errors.forEach(function(error){ %>
+      <% if (error != undefined) { %>
+        <li><%= error; %></li>
+
+      <% } %>
+    <% }); %>
+  </ul>
+<% } %>

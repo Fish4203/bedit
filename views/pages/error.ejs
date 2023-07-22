@@ -16,35 +16,23 @@
                     <!-- Post header-->
                     <header class="mb-4">
                         <!-- Post title-->
-                        <h1 class="fw-bolder mb-1"><%= title; %></h1>
+                        <h1 class="fw-bolder mb-1"><%= title %></h1>
+                        <div class="text-muted fst-italic mb-2">Created by Benjamin Rycroft</div>
                     </header>
                     <!-- Preview image figure-->
                     <!-- Post content-->
                     <section class="mb-5">
 
-                      <%- include('../parts/error'); %>
+                        <p class="fs-5 mb-4">There hass been an Error</p>
 
+                        <p>Code: <%= errorCode; %></p>
 
-                      <form action="/users/register" method="post" enctype="multipart/form-data">
-                        <label for="username">Enter username: </label>
-                        <input class="form-control" id="username" type="text" name="username"/>
                         <br>
-
-                        <label for="password">Enter password: </label>
-                        <input class="form-control" id="password" type="text" name="password"/>
-                        <br>
-
-                        <label for="image">Profile image (optional): </label>
-                        <input type="file" name="image" />
-                        <br>
-
-                        <input type="submit" class="btn btn-success " value="Submit" />
-                      </form>
+                        <%- include('../parts/error'); %>
 
 
 
                     </section>
-
                 </article>
             </div>
             <!-- Side widgets-->

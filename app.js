@@ -18,7 +18,7 @@ mongoose.set("strictQuery", false);
 
 main().catch((err) => console.log(err));
 async function main() {
-  await mongoose.connect('mongodb://blog:fish1234@192.168.20.69:27017/test');
+  await mongoose.connect('mongodb://'+ process.env.LOGIN +'@192.168.20.69:27017/bedit');
 }
 
 

@@ -7,63 +7,75 @@ const { body, validationResult } = require("express-validator");
 
 // view
 exports.index = asyncHandler(async (req, res, next) => {
-  const successfulResult = await Blog.find({}).exec();
-  const users = [];
-  for (const blog in successfulResult) {
-    users.push(await User.findById(successfulResult[blog].user).exec());
+  try {
+    const successfulResult = await Blog.find({}).exec();
+    const users = [];
+    for (const blog in successfulResult) {
+      users.push(await User.findById(successfulResult[blog].user).exec());
+    }
+    // const successfulResult = await Blog.findById('644dc6e0f17dbf6c56df034b').exec();
+    res.render("pages/blogs", {
+      title: "index",
+      user: req.user,
+      users: users,
+      blogs: successfulResult
+    });
+  } catch (e) {
+    res.redirect('/error/?code=500&errors=' + e);
   }
-  // const successfulResult = await Blog.findById('644dc6e0f17dbf6c56df034b').exec();
-  res.render("pages/blogs", {
-    title: "index",
-    user: req.user,
-    users: users,
-    blogs: successfulResult
-  });
 });
 
 exports.blogDetail = asyncHandler(async (req, res, next) => {
-  const blogResult = await Blog.findById(req.params.id).exec();
-  const commentsResult = await Comment.find({blog: req.params.id}).exec();
-  const userResult = await User.findById(blogResult.user).exec();
-  const otherBlogs = await Blog.find({user: blogResult.user}).exec();
-  const users = [];
-  for (const comment in commentsResult) {
-    users.push(await User.findById(commentsResult[comment].user).exec());
-  }
-
-  const tagResult = await Tag.find({blog: req.params.id}).exec();
-
-  const tagmap = new Map();
-
-  for (const tag in tagResult) {
-    if (tagmap.get(tagResult[tag].body) != undefined) {
-      tagmap.set(tagResult[tag].body, tagmap.get(tagResult[tag].body)+1);
-    } else {
-      tagmap.set(tagResult[tag].body, 1);
+  try {
+    const blogResult = await Blog.findById(req.params.id).exec();
+    const commentsResult = await Comment.find({blog: req.params.id}).exec();
+    const userResult = await User.findById(blogResult.user).exec();
+    const otherBlogs = await Blog.find({user: blogResult.user}).exec();
+    const users = [];
+    for (const comment in commentsResult) {
+      users.push(await User.findById(commentsResult[comment].user).exec());
     }
-  }
 
-  res.render("pages/blog", {
-    title: blogResult.title,
-    user: req.user,
-    blog: blogResult,
-    blogUser: userResult,
-    otherBlogs: otherBlogs,
-    comments: commentsResult,
-    users: users,
-    tags: tagmap,
-    errors: [req.query.errors]
-  });
+    const tagResult = await Tag.find({blog: req.params.id}).exec();
+
+    const tagmap = new Map();
+
+    for (const tag in tagResult) {
+      if (tagmap.get(tagResult[tag].body) != undefined) {
+        tagmap.set(tagResult[tag].body, tagmap.get(tagResult[tag].body)+1);
+      } else {
+        tagmap.set(tagResult[tag].body, 1);
+      }
+    }
+
+    res.render("pages/blog", {
+      title: blogResult.title,
+      user: req.user,
+      blog: blogResult,
+      blogUser: userResult,
+      otherBlogs: otherBlogs,
+      comments: commentsResult,
+      users: users,
+      tags: tagmap,
+      errors: [req.query.errors]
+    });
+  } catch (e) {
+    res.redirect('/error/?code=500&errors=' + e);
+  }
 });
 
 
 // create
 exports.blogCreateG = asyncHandler(async (req, res, next) => {
-  res.render("pages/blogCreate", {
+  try {
+    res.render("pages/blogCreate", {
     title: "Create a new blog",
     user: req.user,
     errors: []
   });
+  } catch (e) {
+    res.redirect('/error/?code=500&errors=' + e);
+  }
 });
 
 exports.blogCreateP = [
@@ -120,7 +132,7 @@ exports.blogCreateP = [
 exports.blogDeleteG = asyncHandler(async (req, res, next) => {
   try {
     const blogResult = await Blog.findById(req.params.id).exec();
-    var url;
+    let url = '';
 
     if (String(blogResult.user._id) == String(req.user._id)) {
       try {
@@ -158,7 +170,7 @@ exports.blogUpdateP = [
   // do the stuff
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array();
-    var url;
+    let url = '';
 
     if (errors.length == 0) {
       if (req.user != undefined) {

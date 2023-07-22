@@ -25,46 +25,71 @@
                         <h2>Blogs</h2>
                         <br>
 
-                        <% for (let i=0; i<blogs.length; i++){ %>
-                          <div class="d-flex" style="transform: rotate(0);">
-                              <div class="flex-shrink-0"><img class="" src="<%- blogs[i].image %>" alt="" style="width:50px;height:50px;" /></div>
-                              <div class="ms-3 " >
-                                  <a class="link-dark stretched-link" href="<%- blogs[i].url; %>"></a> <%= blogs[i].title; %>
-                                  <div class="text-muted fst-italic mb-1 ">By: <%= blogUsers[i].username; %> Role:<%= blogUsers[i].role; %></div>
+                        <div class="row">
+                          <% for (let i=0; i<blogs.length; i++){ %>
+                            <div class="card m-1" style="width: 15rem;">
+                              <img class="card-img-top" src="<%- blogs[i].image %>" alt="">
+                              <div class="card-body">
+                                <a class="link-dark stretched-link" href="<%- blogs[i].url; %>"></a>
+                                <h5 class="card-title"><%= blogs[i].title; %></h5>
+                                <div class="text-muted fst-italic mb-1 ">By: <%= blogUsers[i].username; %> Role:<%= blogUsers[i].role; %></div>
                               </div>
-                          </div>
-                          <br>
-                        <% } %>
+                            </div>
+                          <% } %>
+
+                        </div>
                         <br>
 
                         <h2>Users</h2>
                         <br>
 
-                        <% for (let i=0; i<users.length; i++){ %>
-                          <div class="d-flex" style="transform: rotate(0);">
-                              <div class="flex-shrink-0"><img class="rounded-circle" src="<%- users[i].image %>" alt="" style="width:50px;height:50px;"/></div>
-                              <div class="ms-3 " >
-                                <a class="link-dark stretched-link" href="<%- users[i].url; %>"></a><%= users[i].username; %>
+                        <div class="row">
+                          <% for (let i=0; i<users.length; i++){ %>
+                            <div class="card m-1" style="width: 15rem;">
+                              <img class="card-img-top" src="<%- users[i].image %>" alt="">
+                              <div class="card-body">
+                                <a class="link-dark stretched-link" href="<%- users[i].url; %>"></a>
+                                <h5 class="card-title"><%= users[i].username; %></h5>
                                 <div class="text-muted fst-italic mb-1 ">Role: <%= users[i].role; %></div>
                               </div>
-                          </div>
-                          <br>
-                        <% } %>
+                            </div>
+                            <% } %>
+                        </div>
                         <br>
 
                         <h2>Comments</h2>
                         <br>
 
-                        <% for (let i=0; i<comments.length; i++){ %>
-                          <div class="d-flex" style="transform: rotate(0);">
-                              <div class="flex-shrink-0"><img class="" src="<%- commentBlogs[i].image %>" alt="" style="width:50px;height:50px;"/></div>
-                              <div class="ms-3 " >
-                                  <a class="link-dark stretched-link" href="<%- commentBlogs[i].url; %>"></a> <%= comments[i].body; %>
-                                  <div class="text-muted fst-italic mb-1 ">Found in: <%= commentBlogs[i].title; %></div>
+                        <div class="row">
+                          <% for (let i=0; i<comments.length; i++){ %>
+                            <div class="card m-1" style="width: 15rem;">
+                              <img class="card-img-top" src="<%- commentBlogs[i].image %>" alt="">
+                              <div class="card-body">
+                                <a class="link-dark stretched-link" href="<%- commentBlogs[i].url; %>"></a>
+                                <h5 class="card-title"><%= comments[i].body; %></h5>
+                                <div class="text-muted fst-italic mb-1 ">Found in: <%= commentBlogs[i].title; %></div>
                               </div>
-                          </div>
-                          <br>
-                        <% } %>
+                            </div>
+                          <% } %>
+                        </div>
+
+
+                        <h2>Tags</h2>
+                        <br>
+
+                        <div class="row">
+                          <% for (let i=0; i<tags.length; i++){ %>
+                            <div class="card m-1" style="width: 15rem;">
+                              <img class="card-img-top" src="<%- tagBlogs[i].image %>" alt="">
+                              <div class="card-body">
+                                <a class="link-dark stretched-link" href="<%- tagBlogs[i].url; %>"></a>
+                                <h5 class="card-title"><%= tags[i].body; %></h5>
+                                <div class="text-muted fst-italic mb-1 ">Found in: <%= tagBlogs[i].title; %></div>
+                              </div>
+                            </div>
+                            <% } %>
+
+                        </div>
 
 
                     </section>

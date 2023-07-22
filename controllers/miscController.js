@@ -17,11 +17,12 @@ exports.addNRemoveP  = [
   // do the stuff
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    var url;
+    let url = '/';
 
     if (errors.isEmpty()) {
       if (req.user != undefined) {
         try {
+          console.log("TREE");
           const tagResult = await Tag.findOne({body: req.body.body, blog: req.params.id, user: req.user}).exec();
 
           if (tagResult != null) {
@@ -37,6 +38,7 @@ exports.addNRemoveP  = [
           }
 
           url = '/' + req.params.id;
+          console.log("TREE");
         } catch (e) {
           url = '/' + req.params.id + "/?errors=tag logic error";
         }
@@ -47,6 +49,7 @@ exports.addNRemoveP  = [
       url = '/' + req.params.id + "/?errors=cant validate input text";
     }
 
+    console.log("out");
     res.redirect(url);
   }),
 ];
@@ -54,18 +57,54 @@ exports.addNRemoveP  = [
 
 // search
 exports.search = asyncHandler(async (req, res, next) => {
-  const blogResult = await Blog.find({title: { $regex: req.params.search }}).exec();
-  const commentsResult = await Comment.find({body: { $regex: req.params.search }}).exec();
-  const userResult = await User.find({username: { $regex: req.params.search }}).exec();
+  try {
+    const blogResult = await Blog.find({title: { $regex: req.params.search }}).exec();
+    const commentsResult = await Comment.find({body: { $regex: req.params.search }}).exec();
+    const userResult = await User.find({username: { $regex: req.params.search }}).exec();
+    const tagResult = await Tag.find({body: { $regex: req.params.search }}).exec();
 
-  const blogUsers = [];
-  for (const blog in blogResult) {
-    blogUsers.push(await User.findById(blogResult[blog].user).exec());
-  }
-  const commentBlogs = [];
-  for (const comment in commentsResult) {
-    commentBlogs.push(await Blog.findById(commentsResult[comment].blog).exec());
-  }
+    const blogUsers = [];
+    for (const blog in blogResult) {
+      blogUsers.push(await User.findById(blogResult[blog].user).exec());
+    }
+    const commentBlogs = [];
+    for (const comment in commentsResult) {
+      commentBlogs.push(await Blog.findById(commentsResult[comment].blog).exec());
+    }
 
-  res.render("pages/blogSearch", {title: "Search", user: req.user, query: req.params.search, blogs: blogResult, blogUsers: blogUsers, comments: commentsResult, commentBlogs: commentBlogs, users: userResult});
+    const tagBlogs = [];
+    for (const tag in tagResult) {
+      tagBlogs.push(await Blog.findById(tagResult[tag].blog).exec());
+    }
+
+    res.render("pages/blogSearch", {
+      title: "Search",
+      user: req.user,
+      query: req.params.search,
+      blogs: blogResult,
+      blogUsers: blogUsers,
+      comments: commentsResult,
+      commentBlogs: commentBlogs,
+      tags: tagResult,
+      tagBlogs: tagBlogs,
+      users: userResult
+    });
+  } catch (e) {
+    res.redirect('/error/?code=500&errors=' + e);
+  }
+});
+
+// error
+exports.error = asyncHandler(async (req, res, next) => {
+  if (req.query.code == '404') {
+    res.status(404);
+  } else {
+    res.status(500);
+  }
+  res.render("pages/blog", {
+    title: 'Error',
+    user: undefined,
+    errorCode: req.query.code,
+    errors: [req.query.errors]
+  });
 });

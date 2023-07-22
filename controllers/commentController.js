@@ -13,7 +13,7 @@ exports.CreateP = [
   // do the stuff
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    var url;
+    let url = '';
 
     if (errors.isEmpty()) {
       if (req.user != undefined) {
@@ -43,9 +43,9 @@ exports.CreateP = [
 
 // delete
 exports.DeleteG = asyncHandler(async (req, res, next) => {
+  let url = '';
   try {
     const commentsResult = await Comment.findById(req.params.cid).exec();
-    var url;
 
     if (String(commentsResult.user._id) == String(req.user._id)) {
       await Comment.deleteOne({_id: req.params.cid}).exec();
@@ -71,7 +71,7 @@ exports.UpdateP = [
   // do the stuff
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    var url;
+    let url = '';
 
     if (errors.isEmpty()) {
       try {
