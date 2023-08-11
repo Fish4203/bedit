@@ -1,7 +1,5 @@
-this is bad
+A bloging fite i made with express js 
+the site is hostedd here: blog.benflix.dev
 
-
-to run
-
+use docker to make an image for deployment or run using this comand
 node ./bin/www
-it will show nothing 
