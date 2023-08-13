@@ -17,8 +17,9 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
 main().catch((err) => console.log(err));
+console.log(process.env.DB);
 async function main() {
-  await mongoose.connect('mongodb://'+ process.env.LOGIN +'@192.168.20.69:27017/bedit');
+  await mongoose.connect(process.env.DB);
 }
 
 
@@ -42,14 +43,14 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+// app.use(function(err, req, res, next) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+//
+//   // render the error page
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
 
 module.exports = app;

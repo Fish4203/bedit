@@ -1,7 +1,9 @@
-this is bad
+# benedit
+
+a basic bloging site i made with express js
 
 
-to run
+## to run
 
 node ./bin/www
-it will show nothing 
+it will show nothing
